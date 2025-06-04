@@ -34,6 +34,25 @@ def filter_logs(lines, keyword):
     sys.exit(1)
 
 
+def log_analyzer(args):
+        '''Main function to run the log analyzer'''
+        if not args.log_file:
+            logging.error("Log file path is required")
+            sys.exit(1)
+        if not os.path.isfile(args.log_file):
+            logging.error(f"Log file does not exist: {args.log_file}")
+            sys.exit(1)
+        try:
+            lines = load_log_file(args.log_file)
+            filtered_lines = filter_logs(lines, args.keyword)
+            saved_output = save_results(filtered_lines, args.output_file if args.output_file else None)
+            return saved_output if saved_output else None
+
+        except Exception as e:
+            logging.error(f"Error in main execution: {e}")
+            sys.exit(1)
+
+
 def save_results(lines, out_path):
     ''' Write filtered lines to output file '''
     if not out_path:
@@ -47,7 +66,7 @@ def save_results(lines, out_path):
         with open(out_path, 'w') as file:
             for line in lines:
                 file.write(line.rstrip('\n') + '\n')  # ensures no double newlines
-                return out_path
+            return out_path
     except Exception as e:
         logging.error(f"Error saving results to '{out_path}': {e}")
 
@@ -61,11 +80,6 @@ if __name__ == "__main__":
                         help='Keyword to filter log lines')
     args = parser.parse_args()
 
-    try:
-        lines = load_log_file(args.log_file)
-        filtered_lines = filter_logs(lines, args.keyword)
-        saved_output = save_results(filtered_lines, args.output_file[0] if args.output_file else None)
+    log_analyzer(args)
 
-    except Exception as e:
-        logging.error(f"Error in main execution: {e}")
-        sys.exit(1)
+    
