@@ -35,22 +35,22 @@ def filter_logs(lines, keyword):
 
 
 def log_analyzer(args):
-        '''Main function to run the log analyzer'''
-        if not args.log_file:
-            logging.error("Log file path is required")
-            sys.exit(1)
-        if not os.path.isfile(args.log_file):
-            logging.error(f"Log file does not exist: {args.log_file}")
-            sys.exit(1)
-        try:
-            lines = load_log_file(args.log_file)
-            filtered_lines = filter_logs(lines, args.keyword)
-            saved_output = save_results(filtered_lines, args.output_file if args.output_file else None)
-            return saved_output if saved_output else None
+    '''Main function to run the log analyzer'''
+    if not args.log_file:
+        logging.error("Log file path is required")
+        sys.exit(1)
+    if not os.path.isfile(args.log_file):
+        logging.error(f"Log file does not exist: {args.log_file}")
+        sys.exit(1)
+    try:
+        lines = load_log_file(args.log_file)
+        filtered_lines = filter_logs(lines, args.keyword)
+        saved_output = save_results(filtered_lines, args.output_file if args.output_file else None)
+        return saved_output if saved_output else None
 
-        except Exception as e:
-            logging.error(f"Error in main execution: {e}")
-            sys.exit(1)
+    except Exception as e:
+        logging.error(f"Error in main execution: {e}")
+        sys.exit(1)
 
 
 def save_results(lines, out_path):
